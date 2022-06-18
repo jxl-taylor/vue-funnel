@@ -63,7 +63,7 @@ export default {
               display: 'flex',
               'min-width': 'auto',
               [this.isLeft ? 'paddingLeft' : 'paddingRight']:
-                index * this.increment + 'px',
+              (this.maxWidth - this.minWidth - (index + 1) * this.increment) + 'px',
               marginTop: this.rowSpace + 'px'
             }
           },
@@ -79,13 +79,13 @@ export default {
         increment,
         renderTriangle,
         rowHeight,
-        maxWidth
+        minWidth,
       } = this
       const centerVnode = h(
         slot.tag,
         {
           style: {
-            width: maxWidth - index * increment * 2 + 'px',
+            width: minWidth + index * increment * 2 + 'px',
             background: this.colors[index],
             height: rowHeight + 'px',
             position: 'relative',
@@ -99,14 +99,14 @@ export default {
         {
           style: {
             [this.isLeft ? 'paddingLeft' : 'paddingRight']:
-              index * this.increment + 'px',
+            index * this.increment + 'px',
             flex: 1
           }
         },
         this.$slots[`info${index}`]
       )
       const vnode = [
-        renderTriangle(h, index, 'left'),
+        this.renderTriangle(h, index, 'left'),
         centerVnode,
         renderTriangle(h, index, 'right')
       ]
@@ -126,7 +126,7 @@ export default {
             borderTop:
               rowHeight + 'px' + ' ' + 'solid' + ' ' + this.colors[index],
             [type == 'left' ? 'borderLeft' : 'borderRight']:
-              increment + 'px' + ' ' + 'solid' + ' ' + 'transparent'
+              rowHeight + 'px' + ' ' + 'solid' + ' ' + this.colors[index],
           }
         },
         this.$slots[`arrow-${type}${index}`]
